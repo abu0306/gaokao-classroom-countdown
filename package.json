@@ -1,0 +1,15 @@
+{
+  "name": "gaokao-classroom-countdown",
+  "version": "1.0.0",
+  "description": "Windows classroom countdown app with daily motivation and clean backgrounds.",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "lint": "node --check main.js && node --check preload.js && node --check src/renderer/app.mjs && node --check src/core/time.mjs && node --check src/core/content.mjs"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}
