@@ -20,6 +20,7 @@
   "build": {
     "appId": "com.abu0306.gaokao.countdown",
     "productName": "GaokaoCountdown",
+    "publish": "never",
     "files": [
       "main.js",
       "preload.js",
