@@ -7,9 +7,33 @@
   "scripts": {
     "start": "electron .",
     "test": "node --test",
-    "lint": "node --check main.js && node --check preload.js && node --check src/renderer/app.mjs && node --check src/core/time.mjs && node --check src/core/content.mjs"
+    "lint": "node --check main.js && node --check preload.js && node --check src/renderer/app.mjs && node --check src/core/time.mjs && node --check src/core/content.mjs && node --check src/config/load.mjs",
+    "pack:win": "electron-builder --win portable",
+    "pack:dir": "electron-builder --win --dir",
+    "pack:installer": "electron-builder --win nsis",
+    "pack:user": "electron-builder --win portable nsis"
   },
   "devDependencies": {
-    "electron": "^35.0.0"
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.abu0306.gaokao.countdown",
+    "productName": "GaokaoCountdown",
+    "files": [
+      "main.js",
+      "preload.js",
+      "config/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
   }
 }

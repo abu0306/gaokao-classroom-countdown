@@ -1,7 +1,5 @@
 import { daysUntil, formatDate } from "../core/time.mjs";
 import { pickDailyItem } from "../core/content.mjs";
-import { motivationalQuotes } from "../data/quotes.mjs";
-import { cleanBackgrounds } from "../data/backgrounds.mjs";
 
 const daysValue = document.getElementById("daysValue");
 const daysUnit = document.getElementById("daysUnit");
@@ -9,6 +7,9 @@ const targetDateText = document.getElementById("targetDateText");
 const quoteText = document.getElementById("quoteText");
 const todayText = document.getElementById("todayText");
 const screen = document.getElementById("screen");
+const classNameText = document.getElementById("classNameText");
+const schoolNameText = document.getElementById("schoolNameText");
+const countdownLabelText = document.getElementById("countdownLabelText");
 
 function renderCountdown(targetDate) {
   const leftDays = daysUntil(targetDate);
@@ -23,13 +24,14 @@ function renderCountdown(targetDate) {
   targetDateText.textContent = `目标日期：${formatDate(targetDate)}`;
 }
 
-function renderDailyContent(now = new Date()) {
-  const quote = pickDailyItem(motivationalQuotes, now, 7);
-  const background = pickDailyItem(cleanBackgrounds, now, 31);
+function renderDailyContent(config, now = new Date()) {
+  const quote = pickDailyItem(config.quotes, now, 7, config.timeZone);
+  const background = pickDailyItem(config.backgrounds, now, 31, config.timeZone);
   quoteText.textContent = quote;
   screen.style.setProperty("--bg-image", `url('${background}')`);
 
   todayText.textContent = `今天：${now.toLocaleDateString("zh-CN", {
+    timeZone: config.timeZone,
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -50,17 +52,20 @@ function setupScreenSaverExit(mode) {
 }
 
 async function bootstrap() {
-  const mode = await window.countdownApp.getMode();
-  const targetDate = await window.countdownApp.getTargetDate();
+  const config = await window.countdownApp.getConfig();
 
-  renderCountdown(targetDate);
-  renderDailyContent();
-  setupScreenSaverExit(mode);
+  classNameText.textContent = config.className;
+  schoolNameText.textContent = config.schoolName;
+  countdownLabelText.textContent = config.countdownLabel;
+
+  renderCountdown(config.targetDate);
+  renderDailyContent(config);
+  setupScreenSaverExit(config.mode);
 
   setInterval(() => {
-    renderCountdown(targetDate);
-    renderDailyContent();
-  }, 60_000);
+    renderCountdown(config.targetDate);
+    renderDailyContent(config);
+  }, config.refreshIntervalMs);
 }
 
 bootstrap().catch((error) => {

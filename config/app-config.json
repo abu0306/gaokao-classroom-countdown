@@ -1,0 +1,24 @@
+{
+  "className": "实验高中三（7）班",
+  "schoolName": "实验高中",
+  "countdownLabel": "距离高考",
+  "examMonth": 6,
+  "examDay": 7,
+  "timeZone": "Asia/Shanghai",
+  "refreshIntervalMs": 60000,
+  "quotes": [
+    "今日多流汗，明日少流泪。",
+    "把每一分钟都当成冲刺的起点。",
+    "你写下的每一道题，都会在未来回报你。",
+    "慢一点没关系，坚持就会抵达。",
+    "把困难拆成小步，今天先赢一小步。",
+    "你不是和别人比，你是在超越昨天的自己。",
+    "当你想放弃时，再坚持五分钟。",
+    "不求一夜逆袭，但求每天进步。"
+  ],
+  "backgrounds": [
+    "./assets/backgrounds/dawn.svg",
+    "./assets/backgrounds/lake.svg",
+    "./assets/backgrounds/sky.svg"
+  ]
+}

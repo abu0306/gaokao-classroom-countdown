@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { daysUntil, formatDate } from "../src/core/time.mjs";
+import { daysUntil, formatDate, nextAnnualDate, nextGaokaoDate } from "../src/core/time.mjs";
 import { dayKey, pickDailyItem, stableIndexFromDate } from "../src/core/content.mjs";
 
 test("daysUntil counts day boundaries", () => {
@@ -24,6 +24,23 @@ test("dayKey is stable", () => {
 test("pickDailyItem stays consistent for same date", () => {
   const items = ["a", "b", "c", "d"];
   const date = new Date("2026-03-03T08:00:00+08:00");
-  assert.equal(pickDailyItem(items, date, 9), pickDailyItem(items, date, 9));
-  assert.equal(stableIndexFromDate(items, date, 9), stableIndexFromDate(items, date, 9));
+  assert.equal(pickDailyItem(items, date, 9, "Asia/Shanghai"), pickDailyItem(items, date, 9, "Asia/Shanghai"));
+  assert.equal(stableIndexFromDate(items, date, 9, "Asia/Shanghai"), stableIndexFromDate(items, date, 9, "Asia/Shanghai"));
+});
+
+test("dayKey supports fixed timezone", () => {
+  const date = new Date("2026-03-03T00:30:00+08:00");
+  assert.equal(dayKey(date, "Asia/Shanghai"), "2026-03-03");
+});
+
+test("nextGaokaoDate returns this year when before June 7", () => {
+  assert.equal(nextGaokaoDate(new Date("2026-03-03T08:00:00+08:00")), "2026-06-07");
+});
+
+test("nextGaokaoDate returns next year when after June 7", () => {
+  assert.equal(nextGaokaoDate(new Date("2026-06-10T08:00:00+08:00")), "2027-06-07");
+});
+
+test("nextAnnualDate supports custom month/day", () => {
+  assert.equal(nextAnnualDate(12, 1, new Date("2026-06-10T08:00:00+08:00")), "2026-12-01");
 });

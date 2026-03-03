@@ -1,11 +1,10 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { app, BrowserWindow, ipcMain } from "electron";
+import { loadRuntimeConfig } from "./src/config/load.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-const DEFAULT_TARGET_DATE = "2026-06-07";
 
 function parseMode(argv) {
   const args = argv.slice(1).map((value) => value.toLowerCase());
@@ -22,6 +21,7 @@ function parseMode(argv) {
 }
 
 const mode = parseMode(process.argv);
+const runtimeConfig = loadRuntimeConfig({ appDir: __dirname, env: process.env, now: new Date() });
 
 function createWindow() {
   const isSaver = mode === "screensaver";
@@ -56,7 +56,10 @@ function createWindow() {
 
 app.whenReady().then(() => {
   ipcMain.handle("app:mode", () => mode);
-  ipcMain.handle("app:target-date", () => process.env.TARGET_DATE || DEFAULT_TARGET_DATE);
+  ipcMain.handle("app:get-config", () => ({
+    mode,
+    ...runtimeConfig
+  }));
   ipcMain.on("app:exit", () => app.quit());
 
   createWindow();
