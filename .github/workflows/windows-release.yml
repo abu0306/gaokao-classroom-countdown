@@ -40,6 +40,14 @@ jobs:
       - name: Build Windows user packages
         run: npm run pack:user
 
+      - name: Package classroom setup scripts
+        shell: pwsh
+        run: |
+          if (-not (Test-Path dist)) {
+            New-Item -ItemType Directory -Path dist | Out-Null
+          }
+          Compress-Archive -Path scripts/windows/* -DestinationPath dist/classroom-quick-setup.zip -Force
+
       - name: Resolve release tag
         id: release_tag
         shell: bash
@@ -69,7 +77,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: windows-portable-${{ steps.release_tag.outputs.tag }}
-          path: dist/*.exe
+          path: |
+            dist/*.exe
+            dist/*.zip
           if-no-files-found: error
 
       - name: Create GitHub release and upload assets
@@ -79,3 +89,4 @@ jobs:
           generate_release_notes: true
           files: |
             dist/*.exe
+            dist/*.zip
