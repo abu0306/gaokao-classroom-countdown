@@ -8,10 +8,10 @@
     "start": "electron .",
     "test": "node --test",
     "lint": "node --check main.js && node --check preload.js && node --check src/renderer/app.mjs && node --check src/core/time.mjs && node --check src/core/content.mjs && node --check src/config/load.mjs",
-    "pack:win": "electron-builder --win portable",
-    "pack:dir": "electron-builder --win --dir",
-    "pack:installer": "electron-builder --win nsis",
-    "pack:user": "electron-builder --win portable nsis"
+    "pack:win": "electron-builder --win portable --publish never",
+    "pack:dir": "electron-builder --win --dir --publish never",
+    "pack:installer": "electron-builder --win nsis --publish never",
+    "pack:user": "electron-builder --win portable nsis --publish never"
   },
   "devDependencies": {
     "electron": "^35.0.0",
@@ -34,7 +34,6 @@
       "target": [
         "portable"
       ]
-    },
-    "publish": "never"
+    }
   }
 }
