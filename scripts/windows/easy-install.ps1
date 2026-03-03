@@ -19,6 +19,9 @@ function Resolve-AppExe([string]$InputPath) {
   $candidates = @()
 
   $scriptDir = Split-Path -Parent $PSCommandPath
+  $parentDir = Split-Path -Parent $scriptDir
+  $grandParentDir = Split-Path -Parent $parentDir
+
   $projectRoot = Resolve-Path (Join-Path $scriptDir "..\\..")
   $distDir = Join-Path $projectRoot "dist"
 
@@ -31,9 +34,26 @@ function Resolve-AppExe([string]$InputPath) {
     $candidates += $sameDir
   }
 
+  $parentExe = Get-ChildItem -Path $parentDir -File -Filter "*.exe" -ErrorAction SilentlyContinue
+  if ($parentExe) {
+    $candidates += $parentExe
+  }
+
+  $grandParentExe = Get-ChildItem -Path $grandParentDir -File -Filter "*.exe" -ErrorAction SilentlyContinue
+  if ($grandParentExe) {
+    $candidates += $grandParentExe
+  }
+
   $picked = $candidates | Sort-Object LastWriteTime -Descending | Select-Object -First 1
   if ($null -eq $picked) {
-    throw "No application exe found automatically. Please pass -AppExePath."
+    Write-Host "No application exe found automatically."
+    Write-Host "Please input app exe path (example: C:\\Users\\Administrator\\Downloads\\GaokaoCountdown.Setup.1.0.0.exe)"
+    $manualPath = Read-Host "AppExePath"
+    if ([string]::IsNullOrWhiteSpace($manualPath) -or -not (Test-Path $manualPath)) {
+      throw "No valid exe selected. Please rerun and pass -AppExePath."
+    }
+
+    return (Resolve-Path $manualPath).Path
   }
 
   return $picked.FullName
@@ -41,16 +61,33 @@ function Resolve-AppExe([string]$InputPath) {
 
 function Create-DesktopShortcut([string]$ExePath) {
   $desktop = [Environment]::GetFolderPath("Desktop")
+  if ([string]::IsNullOrWhiteSpace($desktop) -or -not (Test-Path $desktop)) {
+    $desktop = Join-Path $env:USERPROFILE "Desktop"
+  }
+
+  if (-not (Test-Path $desktop)) {
+    Write-Host "Desktop path unavailable. Skipping shortcut creation."
+    return
+  }
+
   $shortcutPath = Join-Path $desktop "高考倒计时.lnk"
+  if ([System.IO.Path]::GetExtension($shortcutPath).ToLowerInvariant() -ne ".lnk") {
+    $shortcutPath = [System.IO.Path]::ChangeExtension($shortcutPath, ".lnk")
+  }
 
-  $shell = New-Object -ComObject WScript.Shell
-  $shortcut = $shell.CreateShortcut($shortcutPath)
-  $shortcut.TargetPath = $ExePath
-  $shortcut.WorkingDirectory = Split-Path -Parent $ExePath
-  $shortcut.IconLocation = "$ExePath,0"
-  $shortcut.Save()
+  try {
+    $shell = New-Object -ComObject WScript.Shell
+    $shortcut = $shell.CreateShortcut($shortcutPath)
+    $shortcut.TargetPath = $ExePath
+    $shortcut.WorkingDirectory = Split-Path -Parent $ExePath
+    $shortcut.IconLocation = "$ExePath,0"
+    $shortcut.Save()
 
-  Write-Host "Desktop shortcut created:" $shortcutPath
+    Write-Host "Desktop shortcut created:" $shortcutPath
+  } catch {
+    Write-Host "Failed to create desktop shortcut. You can still use the app normally."
+    Write-Host $_.Exception.Message
+  }
 }
 
 $scriptDir = Split-Path -Parent $PSCommandPath

@@ -88,6 +88,7 @@ npm run pack:user
 说明：
 
 - `easy-install` 会自动寻找最新 exe 并完成屏保配置。
+- 如果自动识别失败，会提示手动输入 `AppExePath`。
 - 如果程序同级目录有 `wallpapers` 文件夹，会自动安装每日壁纸任务。
 - 会自动在桌面创建“高考倒计时”快捷方式。
 
