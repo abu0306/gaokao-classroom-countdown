@@ -11,7 +11,7 @@
     "pack:win": "electron-builder --win portable",
     "pack:dir": "electron-builder --win --dir",
     "pack:installer": "electron-builder --win nsis",
-    "pack:user": "electron-builder --win portable nsis --publish never"
+    "pack:user": "electron-builder --win portable nsis"
   },
   "devDependencies": {
     "electron": "^35.0.0",
@@ -20,7 +20,6 @@
   "build": {
     "appId": "com.abu0306.gaokao.countdown",
     "productName": "GaokaoCountdown",
-    "publish": "never",
     "files": [
       "main.js",
       "preload.js",
