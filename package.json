@@ -11,7 +11,7 @@
     "pack:win": "electron-builder --win portable",
     "pack:dir": "electron-builder --win --dir",
     "pack:installer": "electron-builder --win nsis",
-    "pack:user": "electron-builder --win portable nsis"
+    "pack:user": "electron-builder --win portable nsis --publish never"
   },
   "devDependencies": {
     "electron": "^35.0.0",
