@@ -52,10 +52,14 @@ function setupScreenSaverExit(mode) {
 }
 
 async function bootstrap() {
+  if (!window.countdownApp) {
+    throw new Error("Electron 接口未就绪，请通过 Electron 启动应用。");
+  }
   const config = await window.countdownApp.getConfig();
 
   classNameText.textContent = config.className;
   schoolNameText.textContent = config.schoolName;
+  schoolNameText.hidden = !config.schoolName;
   countdownLabelText.textContent = config.countdownLabel;
 
   renderCountdown(config.targetDate);

@@ -5,8 +5,8 @@ import { motivationalQuotes } from "../data/quotes.mjs";
 import { cleanBackgrounds } from "../data/backgrounds.mjs";
 
 const DEFAULT_CONFIG = {
-  className: "实验高中三（7）班",
-  schoolName: "实验高中",
+  className: "高三（7）班",
+  schoolName: "",
   countdownLabel: "距离高考",
   examMonth: 6,
   examDay: 7,
@@ -56,7 +56,6 @@ export function loadRuntimeConfig({ appDir, env = process.env, now = new Date() 
   const timeZone = env.TIME_ZONE || merged.timeZone;
 
   ensureNonEmptyString(className, "className");
-  ensureNonEmptyString(schoolName, "schoolName");
   ensureNonEmptyString(countdownLabel, "countdownLabel");
   ensureNonEmptyString(timeZone, "timeZone");
 
